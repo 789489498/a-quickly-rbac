@@ -1,0 +1,171 @@
+<?php
+
+namespace Qihoo;
+
+class UserRoleController extends \BaseController
+{
+    public $defaultPage = 1;
+    public $defaultPageSize = 20;
+
+    public function getListAction()
+    {
+        $page = $this->defaultPage;
+        $pageSize = $this->defaultPageSize;
+        $params = array(
+                "username" => \Input::get('username')
+                );
+        list($total, $records) = UserRole::getQuery($page, $pageSize, $params);
+        $totalPages = ceil($total / $pageSize);
+        $roleMap = Role::getRoleMap();
+
+        return \View::make("qihoo.userrole.list", array(
+            'records' => $records,
+            'total' => $total,
+            'page'  => $page,
+            'totalPages' => $totalPages,
+            'pageSize' => $pageSize,
+            'roleMap'  => $roleMap,
+            'username' => $params['username']
+        ));
+    }
+
+    public function postQueryAction()
+    {
+        $page = \Input::get('page') ? : $this->defaultPage;
+        $pageSize = \Input::get('page_size') ? : $this->defaultPageSize;
+        $params = $this->getQueryParams();
+        list($total, $records) = UserRole::getQuery($page, $pageSize, $params);
+        $totalPages = ceil($total / $pageSize);
+        $roleMap = Role::getRoleMap();
+
+        return \View::make("qihoo.userrole.query", array(
+            'records' => $records,
+            'total' => $total,
+            'page'  => $page,
+            'totalPages' => $totalPages,
+            'pageSize' => $pageSize,
+            'roleMap'  => $roleMap,
+        ));
+    }
+
+    public function getAddAction()
+    {
+        $roleMap = Role::getRoleMap();
+        $userCollection = UserRole::getUserCollection();
+
+        return \View::make("qihoo.userrole.add", array(
+            'roleMap' => $roleMap,
+            'userCollection' => $userCollection,
+        ));
+    }
+
+    public function postAddAction()
+    {
+        $data = array(
+            'username' => \Input::get('username'),
+            'role_id'  => \Input::get('role_id'),
+            'from_username' => \Input::get("from_username"),
+        );
+
+        if (!empty($data["from_username"]) && !empty($data["username"])) {
+            $targetRoles = \DB::find(UserRole::TABLE, array('username' => $data['from_username']));
+
+            foreach ($targetRoles as $role) {
+                $userRole = \DB::findOne(UserRole::TABLE, array('username' => $data['username'], 'role_id' => $role->role_id));
+                if (!empty($userRole)) {
+                    continue;
+                }
+                $newUserRole = array(
+                    'username'    => $data['username'],
+                    'role_id'     => $role->role_id,
+                    'create_time' => date('Y-m-d'),
+                    'operator'    => User::getUsername(),
+                );
+                \DB::insert(UserRole::TABLE, $newUserRole);
+            }
+        } elseif (!empty($data["username"])) {
+            $newUserRole = array(
+                'username'    => $data['username'],
+                'role_id'     => $data['role_id'],
+                'create_time' => date('Y-m-d'),
+                'operator'    => User::getUsername(),
+            );
+            \DB::insert(UserRole::TABLE, $newUserRole);
+        }
+
+        return \Response::redirect(\URL::route("Qihoo\UserRoleController@getListAction", array("username" => $data['username'])));
+    }
+
+    public function getUpdateAction()
+    {
+        $id = \Input::get("id");
+        if (empty($id)) {
+            throw new \Exception("id is missing");
+        }
+        $userRole = \DB::findOne(UserRole::TABLE, array('id' => $id));
+        if (empty($userRole)) {
+            throw new \Exception("userRole not found");
+        }
+        $roleMap = Role::getRoleMap();
+
+        return \View::make("qihoo.userrole.update", array(
+            "userRole"  => $userRole,
+            'roleMap' => $roleMap,
+        ));
+    }
+
+    public function postUpdateAction()
+    {
+        $data = array(
+            'id'       => \Input::get('id'),
+            'username' => \Input::get('username'),
+            'role_id'  => \Input::get('role_id'),
+        );
+        if (empty($data['role_id'])) {
+            throw new \Exception("role_id is missing");
+        }
+        $userRole= \DB::findOne(UserRole::TABLE, array('id' => $data['id']));
+        if (empty($userRole)) {
+            throw new \Exception("userRole not found");
+        }
+
+        $newerUserRole = array(
+            'role_id'  => $data['role_id'],
+            'username' => $data['username'],
+            'operator' => User::getUsername(),
+        );
+        \DB::update(UserRole::TABLE, $newerUserRole, array('id' => $data['id']));
+
+        return \Response::redirect(\URL::route("Qihoo\UserRoleController@getListAction", array("id" => $data['id'], "username" => $data['username'])));
+    }
+
+    public function getDeleteAction()
+    {
+        $data = array(
+            'id' => \Input::get('id'),
+            'username' => \Input::get('username')
+        );
+        if (empty($data['id'])) {
+            throw new \Exception("id is missing");
+        }
+        $userRole = \DB::findOne(UserRole::TABLE, array('id' => $data['id']));
+        if (empty($userRole)) {
+            throw new \Exception('userRole not found');
+        }
+        \DB::delete(UserRole::TABLE, array('id' => $userRole->id));
+
+        return \Response::redirect(\URL::route("Qihoo\UserRoleController@getListAction", array("username" => $data['username'])));
+    }
+
+    protected function getQueryParams()
+    {
+        $params = array();
+        $username = \Input::get('username');
+
+        if (!empty($username)) {
+            $params['username'] = $username;
+        }
+
+        return $params;
+    }
+}

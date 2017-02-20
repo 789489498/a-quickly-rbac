@@ -1,0 +1,11 @@
+<?php
+$tabs = array(
+    "tabs" => array(
+        "Qihoo\RoleController@getListAction" => "列表",
+        "Qihoo\RoleController@getAddAction" => "新建",
+    ),
+    "title" => "",
+    "comment" => ""
+);
+?>
+<?= View::get("layout.pageheader", $tabs) ?>

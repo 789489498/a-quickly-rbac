@@ -1,0 +1,46 @@
+<?= View::get('layout.header') ?>
+
+<?= View::get("qihoo.role.pageheader") ?>
+
+<div class="row">
+  <div class="col-md-12">
+    <form class="form-horizontal" id="queryform" action="<?= URL::route('Qihoo\RoleController@postQueryAction') ?>" method="post">
+        <div class="form-group">
+            <label class="col-md-1 control-label">名称</label>
+            <input class="col-md-2 form-control input-small" type="text" name="name" id="name" value="" />
+        </div>
+        <div class="form-group">
+            <label class="col-md-1 control-label"></label>
+            <button type="submit" class="btn btn-primary" id="queryform_sub">查询</button>
+        </div>
+    </form>
+
+    <div class="portlet" id="query_result">
+    <?php include View::path("qihoo.role.query") ?>
+    </div>
+
+  </div><!--col-md-12-->
+</div><!--row-->
+
+<script type="text/javascript">
+$(function () {
+    //获取查询参数
+    var getParams = function() {
+        var params = {
+            "name" : $.trim($('#name').val())
+        };
+        return params;
+    }
+
+    <?= View::get("layout.query.queryform", array("requestUrl" => URL::route("Qihoo\RoleController@postQueryAction"))) ?>
+
+    <?= View::get("layout.query.querypage", array("requestUrl" => URL::route("Qihoo\RoleController@postQueryAction")))
+ ?>
+
+    <?= View::get("layout.query.bindevent") ?>
+
+    bindEvt();
+});
+</script>
+
+<?= View::get('layout.footer') ?>

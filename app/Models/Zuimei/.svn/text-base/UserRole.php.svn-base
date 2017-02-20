@@ -1,0 +1,86 @@
+<?php
+
+namespace Qihoo;
+
+class UserRole
+{
+    const TABLE = "qihoo_user_role";
+
+    public static function getQuery($page, $pageSize, $params)
+    {
+        $table = "qihoo_user_role as r";
+        $where = self::getQueryConditions($params);
+        $offset = ($page - 1) * $pageSize;
+        $limit = "limit {$pageSize} offset {$offset}";
+
+        $totalSql = "select count(*) as total from $table $where";
+        $result = \DB::select($totalSql, $params);
+        $total = empty($result) ? 0 : $result[0]->total;
+
+        $sql = "select * from $table $where order by r.role_id $limit";
+        $result = \DB::select($sql, $params);
+
+        return array($total, $result);
+    }
+
+    public static function getQueryConditions(&$params)
+    {
+        $conditions = array();
+        if (!empty($params['username'])) {
+            $conditions[] = "r.username=:username";
+        }
+
+        $where = implode(" and ", $conditions);
+        if (empty($where)) {
+            return "";
+        } else {
+            return "where {$where}";
+        }
+    }
+
+    /**
+     * 用户所拥有权限的路由
+     */
+    public static function userRoutes($username)
+    {
+        $userRoutes = array();
+
+        $userRoles = \DB::reconnect()->find(self::TABLE, array('username' => $username));
+        $userRoutes = array();
+        foreach ($userRoles as $userRole) {
+            $roleRoutes = \DB::reconnect()->find(RoleRoute::TABLE, array('role_id' => $userRole->role_id));
+            foreach ($roleRoutes as $roleRoute) {
+                $userRoutes[] = $roleRoute->has_route;
+            }
+        }
+
+        return $userRoutes;
+    }
+
+    /**
+     * 用户是否有某个路由的权限
+     */
+    public static function hasRoute($username, $route)
+    {
+        $userRoutes = array_map('strtolower', self::userRoutes($username));
+        if (in_array(strtolower($route), $userRoutes)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 获取用户列表
+     */
+    public static function getUserCollection()
+    {
+        $users = \DB::reconnect()->select("select distinct(username) from " . self::TABLE);
+        $userCollection = array();
+        foreach ($users as $user) {
+            $userCollection[] = $user->username;
+        }
+        sort($userCollection);
+        return $userCollection;
+    }
+}

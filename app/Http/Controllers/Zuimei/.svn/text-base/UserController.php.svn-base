@@ -1,0 +1,15 @@
+<?php
+
+namespace Qihoo;
+
+class UserController extends \BaseController
+{
+    /**
+     * 退出登录
+     */
+    public function logoutAction()
+    {
+        User::logout();
+        return \Response::redirect('/');
+    }
+}

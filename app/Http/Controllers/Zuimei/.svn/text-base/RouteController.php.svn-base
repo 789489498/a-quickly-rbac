@@ -1,0 +1,242 @@
+<?php
+
+namespace Qihoo;
+
+class RouteController extends \BaseController
+{
+    public $defaultPage = 1;
+    public $defaultPageSize = 20;
+
+    public function getListAction()
+    {
+        $page = $this->defaultPage;
+        $pageSize = $this->defaultPageSize;
+        $params = array();
+        list($total, $records) = Route::getQuery($page, $pageSize, $params);
+        $totalPages = ceil($total / $pageSize);
+        $menuMap = Menu::getMenuMap();
+        $menu1 = \DB::find(Menu::TABLE, array('level' => 1));
+        $menu2 = \DB::find(Menu::TABLE, array('level' => 2));
+        $menu3 = \DB::find(Menu::TABLE, array('level' => 3));
+
+        return \View::make("qihoo.route.list", array(
+            'records' => $records,
+            'total' => $total,
+            'page'  => $page,
+            'totalPages' => $totalPages,
+            'pageSize' => $pageSize,
+            'menuMap' => $menuMap,
+            'menu1' => $menu1,
+            'menu2' => $menu2,
+            'menu3' => $menu3,
+        ));
+    }
+
+    public function postQueryAction()
+    {
+        $page = \Input::get('page') ? : $this->defaultPage;
+        $pageSize = \Input::get('page_size') ? : $this->defaultPageSize;
+        $params = $this->getQueryParams();
+        list($total, $records) = Route::getQuery($page, $pageSize, $params);
+        $totalPages = ceil($total / $pageSize);
+        $menuMap = Menu::getMenuMap();
+
+        return \View::make("qihoo.route.query", array(
+            'records' => $records,
+            'total' => $total,
+            'page'  => $page,
+            'totalPages' => $totalPages,
+            'pageSize' => $pageSize,
+            'menuMap' => $menuMap,
+        ));
+    }
+
+    public function getAddAction()
+    {
+        $menu1 = \DB::find(Menu::TABLE, array('level' => 1));
+        $menu2 = \DB::find(Menu::TABLE, array('level' => 2));
+        $menu3 = \DB::find(Menu::TABLE, array('level' => 3));
+        return \View::make("qihoo.route.add", array(
+            'menu1' => $menu1,
+            'menu2' => $menu2,
+            'menu3' => $menu3,
+        ));
+    }
+
+    public function postAddAction()
+    {
+        $data = array(
+            'name'  => \Input::get('name'),
+            'route' => \Input::get('route'),
+            'mid_1' => \Input::get('mid_1'),
+            'mid_2' => \Input::get('mid_2'),
+            'mid_3' => \Input::get('mid_3'),
+            'is_default' => \Input::get('is_default'),
+        );
+
+        //如果mid_3=0检查mid_2是否是node，如果mid_3!=0检查mid_2是否是terminal
+        $menu = \DB::findOne(Menu::TABLE, array('id' => $data['mid_2']));
+        if (empty($menu)) {
+            throw new \Exception("mid_2 menu not found");
+        }
+        if ($data['mid_3'] == 0 && $menu->type == 0) {
+            throw new \Exception("mid_2 is a node, does not allow route");
+        } elseif ($data['mid_3'] != 0 && $menu->type == 1) {
+            throw new \Exception("mid_2 is a termial, does not allow submenu");
+        }
+
+        $route = array(
+            'name'  => $data['name'],
+            'route' => $data['route'],
+            'mid_1' => $data['mid_1'],
+            'mid_2' => $data['mid_2'],
+            'mid_3' => $data['mid_3'],
+            'is_default'  => $data['is_default'],
+            'create_time' => date('Y-m-d'),
+            'operator'    => User::getUsername(),
+        );
+
+        // 如果涉及到更改default route，需要先清空原default route，注意区分二级菜单路由和三级菜单路由
+        if ($route['is_default'] == 1) {
+            if ($data['mid_3'] != 0) {
+                \DB::update(Route::TABLE, array('is_default' => 0), array('mid_3' => $data['mid_3']));
+            } else {
+                \DB::update(Route::TABLE, array('is_default' => 0), array('mid_2' => $data['mid_2']));
+            }
+        }
+
+        \DB::insert(Route::TABLE, $route);
+
+        return \Response::redirect(\URL::route("Qihoo\RouteController@getAddAction"));
+    }
+
+    public function getUpdateAction()
+    {
+        $id = \Input::get("id");
+        if (empty($id)) {
+            throw new \Exception("id is missing");
+        }
+        $route = \DB::findOne(Route::TABLE, array('id' => $id));
+        if (empty($route)) {
+            throw new \Exception("route not found");
+        }
+        $menu1 = \DB::find(Menu::TABLE, array('level' => 1));
+        $menu2 = \DB::find(Menu::TABLE, array('level' => 2));
+        $menu3 = \DB::find(Menu::TABLE, array('level' => 3));
+
+        return \View::make("qihoo.route.update", array(
+            "route" => $route,
+            'menu1' => $menu1,
+            'menu2' => $menu2,
+            'menu3' => $menu3,
+        ));
+    }
+
+    public function postUpdateAction()
+    {
+        $data = array(
+            'id'   => \Input::get('id'),
+            'route' => \Input::get('route'),
+            'name' => \Input::get('name'),
+            'mid_1' => \Input::get('mid_1'),
+            'mid_2' => \Input::get('mid_2'),
+            'mid_3' => \Input::get('mid_3'),
+            'is_default' => \Input::get('is_default'),
+        );
+        if (empty($data['id']) || empty($data['name'])) {
+            throw new \Exception("id or name is missing");
+        }
+        $route = \DB::findOne(Route::TABLE, array('id' => $data['id']));
+        if (empty($route)) {
+            throw new \Exception("route not found");
+        }
+
+        //如果mid_3=0检查mid_2是否是node，如果mid_3!=0检查mid_2是否是terminal
+        $menu = \DB::findOne(Menu::TABLE, array('id' => $data['mid_2']));
+        if (empty($menu)) {
+            throw new \Exception("mid_2 menu not found");
+        }
+        if ($data['mid_3'] == 0 && $menu->type == 0) {
+            throw new \Exception("mid_2 is a node, does not allow route");
+        } elseif ($data['mid_3'] != 0 && $menu->type == 1) {
+            throw new \Exception("mid_2 is a termial, does not allow submenu");
+        }
+
+        //先更新role_route
+        if ($route->route != $data['route']) {
+            \DB::update(RoleRoute::TABLE, array('has_route' => $data['route']), array('has_route' => $route->route));
+        }
+
+        $newerRoute = array(
+            'name'  => $data['name'],
+            'route' => $data['route'],
+            'mid_1' => $data['mid_1'],
+            'mid_2' => $data['mid_2'],
+            'mid_3' => $data['mid_3'],
+            'is_default' => $data['is_default'],
+            'operator'   => User::getUsername(),
+        );
+
+        // 如果涉及到更改default route，需要先清空原default route，注意区分二级菜单路由和三级菜单路由
+        if ($newerRoute['is_default'] == 1) {
+            if ($data['mid_3'] != 0) {
+                \DB::update(Route::TABLE, array('is_default' => 0), array('mid_3' => $data['mid_3']));
+            } else {
+                \DB::update(Route::TABLE, array('is_default' => 0), array('mid_2' => $data['mid_2']));
+            }
+        }
+
+        \DB::update(Route::TABLE, $newerRoute, array('id' => $data['id']));
+
+        return \Response::redirect(\URL::route("Qihoo\RouteController@getListAction"));
+    }
+
+    public function getDeleteAction()
+    {
+        $data = array(
+            'id' => \Input::get("id"),
+        );
+
+        if (empty($data['id'])) {
+            throw new \Exception("id is missing");
+        }
+        $route = \DB::findOne(Route::TABLE, array("id" => $data["id"]));
+        if (empty($route)) {
+            throw new \Exception("route not found");
+        }
+        if ($route->is_default == 1) {
+            throw new \Exception("default route cannot be deleted");
+        }
+        \DB::delete(Route::TABLE, array('id' => $route->id));
+        \DB::delete(RoleRoute::TABLE, array('has_route' => $route->route));
+
+        return \Response::redirect(\URL::route("Qihoo\RouteController@getListAction"));
+    }
+
+    protected function getQueryParams()
+    {
+        $params = array();
+        $name = \Input::get('name');
+        $mid1 = \Input::get('mid_1');
+        $mid2 = \Input::get('mid_2');
+        $mid3 = \Input::get('mid_3');
+
+        if (!empty($name)) {
+            $params['name'] = $name;
+        }
+
+        if (!empty($mid1)) {
+            $params['mid_1'] = $mid1;
+        }
+
+        if (!empty($mid2)) {
+            $params['mid_2'] = $mid2;
+        }
+
+        if (!empty($mid3)) {
+            $params['mid_3'] = $mid3;
+        }
+
+        return $params;
+    }
+}

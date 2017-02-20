@@ -1,0 +1,45 @@
+<?= View::get('layout.header') ?>
+
+<?= View::get("qihoo.userrole.pageheader") ?>
+
+<div class="row">
+  <div class="col-md-12">
+    <form id="queryform" class="form-horizontal" action="<?= URL::route('Qihoo\UserRoleController@postQueryAction') ?>" method="post">
+        <div class="form-group">
+            <label class="col-md-1 control-label">用户名</label>
+            <input class="col-md-2 form-control input-small" type="text" name="username" id="username" value="<?= $username ?>" />
+        </div>
+        <div class="form-group">
+            <label class="col-md-1 control-label"></label>
+            <button type="submit" class="btn btn-primary" id="queryform_sub">查询</button>
+        </div>
+    </form>
+
+    <div class="portlet" id="query_result">
+    <?php include View::path("qihoo.userrole.query") ?>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    //获取查询参数
+    var getParams = function() {
+        var params = {
+            "username" : $.trim($('#username').val())
+        };
+        return params;
+    }
+
+    <?= View::get("layout.query.queryform", array("requestUrl" => URL::route("Qihoo\UserRoleController@postQueryAction"))) ?>
+
+    <?= View::get("layout.query.querypage", array("requestUrl" => URL::route("Qihoo\UserRoleController@postQueryAction")))
+ ?>
+
+    <?= View::get("layout.query.bindevent") ?>
+
+    bindEvt();
+});
+</script>
+
+<?= View::get('layout.footer') ?>

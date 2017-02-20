@@ -1,0 +1,86 @@
+<?= View::get('layout.header') ?>
+
+<?= View::get("qihoo.route.pageheader") ?>
+
+<div class="row">
+  <div class="col-md-12">
+    <form id="queryform" class="form-horizontal" action="<?= URL::route('Qihoo\RouteController@postQueryAction') ?>" method="post">
+        <div class="form-group">
+                <label class="col-md-1 control-label">名称</label>
+                <input class="col-md-2 form-control input-small" type="text" name="name" id="name" value="" />
+        </div>
+        <div class="form-group">
+            <label class="col-md-1 control-label">一级菜单</label>
+            <select class="col-md-2 form-control input-small" id="mid_1" name="mid_1">
+                <option selected='selected' value="0">无</option>
+                <?php foreach($menu1 as $v): ?>
+                <option value="<?= $v->id ?>"><?= $v->name ?></option>
+                <?php endforeach; ?>
+            </select>
+            <label class="col-md-1 control-label">二级菜单</label>
+            <select class="col-md-2 form-control input-small" id="mid_2" name="mid_2">
+                <option selected='selected' value="0">无</option>
+                <?php foreach($menu2 as $v): ?>
+                <option value="<?= $v->id ?>" class="mpid_<?= $v->pid ?> mlevel_2" style="display:none;"><?= $v->name ?></option>
+                <?php endforeach; ?>
+            </select>
+            <label class="col-md-1 control-label">三级菜单</label>
+            <select class="col-md-2 form-control input-small" id="mid_3" name="mid_3">
+                <option selected='selected' value="0">无</option>
+                <?php foreach($menu3 as $v): ?>
+                <option value="<?= $v->id ?>" class="mpid_<?= $v->pid ?> mlevel_3" style="display:none;"><?= $v->name ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="col-md-1 control-label"></label>
+            <button id="queryform_sub" type="submit" class="btn btn-primary">查询</button>
+        </div>
+    </form>
+
+    <div class="portlet" id="query_result">
+    <?php include View::path("qihoo.route.query") ?>
+    </div>
+
+  </div><!--col-md-12-->
+</div><!--row-->
+
+<script type="text/javascript">
+$(function () {
+    //获取查询参数
+    var getParams = function() {
+        var params = {
+            "name"  : $.trim($('#name').val()),
+            "mid_1" : $.trim($('#mid_1').val()),
+            "mid_2" : $.trim($('#mid_2').val()),
+            "mid_3" : $.trim($('#mid_3').val())
+        };
+        return params;
+    }
+
+    <?= View::get("layout.query.queryform", array("requestUrl" => URL::route("Qihoo\RouteController@postQueryAction"))) ?>
+
+    <?= View::get("layout.query.querypage", array("requestUrl" => URL::route("Qihoo\RouteController@postQueryAction")))
+ ?>
+
+    <?= View::get("layout.query.bindevent") ?>
+
+    bindEvt();
+});
+
+$(function() {
+    $("#mid_1").change(function() {
+        var mid1 = $(this).val();
+        $(".mlevel_2").hide();
+        $(".mpid_"+mid1).show();
+        $(".mlevel_3").hide();
+    });
+    $("#mid_2").change(function() {
+        var mid2 = $(this).val();
+        $(".mlevel_3").hide();
+        $(".mpid_"+mid2).show();
+    });
+});
+</script>
+
+<?= View::get('layout.footer') ?>

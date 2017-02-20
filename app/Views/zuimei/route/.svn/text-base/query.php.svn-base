@@ -1,0 +1,50 @@
+<div class="portlet-title"><i class="icon-list"></i> 总数：<?= $total ?></div>
+<div class="portlet-body">
+    <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>一级菜单</th>
+            <th>二级菜单</th>
+            <th>三级菜单</th>
+            <th>名称</th>
+            <th>路由</th>
+            <th>默认页</th>
+            <th>操作人</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($records as $record): ?>
+            <tr>
+                <td><?= $record->id ?></td>
+                <td><?= $menuMap[$record->mid_1] ?></td>
+                <td><?= $menuMap[$record->mid_2] ?></td>
+                <td><?= $menuMap[$record->mid_3] ?></td>
+                <td><?= $record->name ?></td>
+                <td><?= $record->route ?></td>
+                <td><?= $record->is_default == 1 ? '是' : '否' ?></td>
+                <td><?= $record->operator ?></td>
+                <td>
+                    <a class="btn btn-default btn-xs purple" href="<?= URL::route('Qihoo\RouteController@getUpdateAction', array('id' => $record->id)) ?>"><i class="icon-edit"></i> 编辑</a>
+                    <a class="btn btn-default btn-xs purple" href="<?= URL::route('Qihoo\RouteController@getDeleteAction', array('id' => $record->id)) ?>"><i class="icon-trash"></i> 删除</a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+    <div class="gigantic pagination">
+        <a href="#" class="first" data-action="first">&laquo;</a>
+        <a href="#" class="previous" data-action="previous">&lsaquo;</a>
+        <input type="text" readonly="readonly" data-max-page="<?= $totalPages ?>" />
+        <a href="#" class="next" data-action="next">&rsaquo;</a>
+        <a href="#" class="last" data-action="last">&raquo;</a>
+    </div>
+
+    <input type="hidden" id="totalPages" value="<?= $totalPages ?>"/>
+    <input type="hidden" id="page" value="<?= $page ?>"/>
+    <input type="hidden" id="page_size" value="<?= $pageSize ?>"/>
+    </div>
+</div><!--portlet-body-->

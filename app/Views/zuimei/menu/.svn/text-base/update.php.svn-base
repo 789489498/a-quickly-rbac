@@ -1,0 +1,36 @@
+<?= View::get('layout.header') ?>
+
+<?= View::get("qihoo.menu.pageheader") ?>
+
+<div class="row">
+  <div class="col-md-12">
+    <form id="newactivityform" class="form-horizontal" action="<?= URL::route('Qihoo\MenuController@postUpdateAction') ?>" method="post">
+    <input type="hidden" name="id" id="id" value="<?= $menu->id ?>" />
+    <div class="form-group">
+        <label class="col-md-1 control-label">菜单名称</label>
+        <input class="col-md-2 form-control input-small" type="text" name="name" id="name" value="<?= $menu->name ?>" />
+    </div>
+    <div class="form-group">
+        <label class="col-md-1 control-label">父级菜单</label>
+        <input class="col-md-2 form-control input-small" readonly="readonly" type="text" name="pid" id="pid" value="<?= DB::findOne(Qihoo\Menu::TABLE, array('id' => $menu->pid)) ? \DB::findOne(Qihoo\Menu::TABLE, array('id' => $menu->pid))->name : "无" ?>" />
+    </div>
+    <div class="form-group" id="div_type">
+        <label class="col-md-1 control-label">菜单类型</label>
+        <select disabled="disabled" name="type" class="col-md-2 form-control input-large" id="type">
+            <option value="0" <?= $menu->type==0 ? "selected='selected'" : "" ?>>节点 - 不直接指向路由，可以有子菜单</option>
+            <option value="1" <?= $menu->type==1 ? "selected='selected'" : "" ?>>末端 - 直接指向路由，不可以有子菜单</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="col-md-1 control-label"></label>
+        <button id="form_sub" type="submit" class="btn btn-primary">提交</button>
+    </div>
+    </form>
+  </div>
+</div><!--contentwrapper-->
+
+
+<script type="text/javascript">
+</script>
+
+<?= View::get('layout.footer') ?>

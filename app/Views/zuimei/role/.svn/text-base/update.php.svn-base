@@ -1,0 +1,85 @@
+<?= View::get('layout.header') ?>
+
+<?= View::get("qihoo.role.pageheader") ?>
+
+<div class="row">
+  <div class="col-md-12">
+
+    <form id="newactivityform" class="form-horizontal" action="<?= URL::route('Qihoo\RoleController@postUpdateAction') ?>" method="post">
+    <input type="hidden" name="id" id="id" value="<?= $role->id ?>" />
+    <div class="form-group">
+        <label class="col-md-1 control-label">名称</label>
+        <input class="col-md-2 form-control input-small" type="text" name="name" id="name" value="<?= $role->name ?>" />
+    </div>
+
+    <div class="form-group">
+        <?php foreach($routes as $k => $v): ?>
+        <div class="check_all">
+            <div>
+                <h3 style="margin: 20px 0;">
+                    <input type="checkbox" class="checkall" />
+                    <span style="color:white;background-color:rgb(50, 78, 114);padding:5px;border-radius:4px;"><?= $menuMap[$k] ?></span>
+                    <button style="margin-left:10px;" class="hide_route btn btn-warning">show</button>
+                </h3>
+            </div>
+            <div class="hide_all" style="display:none;">
+                <?php foreach($v as $k1 => $v1): ?>
+                <div class="check_all" style="margin-left:20px;">
+                <h4 style="margin:20px 0;">
+                    <input type="checkbox" class="checkall" />
+                    <span style="color:white;background-color:rgb(42, 131, 42);padding:5px;border-radius:4px;"><?= $menuMap[$k1] ?></span>
+                </h4>
+                    <?php foreach($v1 as $k2 => $v2): ?>
+                    <div class="check_all" style="margin-left:20px;">
+                    <h5 style="margin:10px 0;">
+                        <input type="checkbox" class="checkall" />
+                        <span style="color:white;background-color:rgb(167, 93, 69);padding:5px;border-radius:4px;"><?= $menuMap[$k2] ?></span>
+                    </h5>
+                        <div style="margin-left:20px;">
+                        <?php foreach($v2 as $k3 => $v3): ?>
+                        <input id='route_<?= $k3 ?>' type="checkbox" name="routes[]" value="<?= $v3->route ?>" <?= Qihoo\RoleRoute::hasRoute($role->id, $v3->route) ? "checked=checked" : "" ?> /> <?= $v3->name ?>
+                        <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endforeach; ?>
+    </div>
+    <div class="form-group">
+        <label class="col-md-1 control-label"></label>
+        <button id="form_sub" type="submit" class="btn btn-primary">提交</button>
+    </div>
+    </form>
+  </div>
+</div>
+<script type="text/javascript">
+$(function() {
+    $(".checkall").click(function() {
+        var is_checked = $(this).attr('checked');
+        if (is_checked == 'checked') {
+            $(this).closest("div[class='check_all']").find("input:checkbox").attr('checked', 'checked');
+        } else {
+            $(this).closest("div[class='check_all']").find("input:checkbox").attr('checked', false);
+        }
+        $(this).closest("div[class='check_all']").find("input:checkbox").uniform();
+    });
+
+    $(".hide_route").click(function() {
+        var is_hide = $(this).text();
+        if (is_hide == 'hide') {
+            $(this).closest("div[class='check_all']").find("div[class='hide_all']").hide();
+            $(this).text('show');
+            return false;
+        } else {
+            $(this).closest("div[class='check_all']").find("div[class='hide_all']").show();
+            $(this).text('hide');
+            return false;
+        }
+    });
+});
+</script>
+
+<?= View::get('layout.footer') ?>

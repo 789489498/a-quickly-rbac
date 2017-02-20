@@ -1,0 +1,50 @@
+<?php
+
+namespace Qihoo;
+
+class Role
+{
+    const TABLE = "qihoo_role";
+
+    public static function getQuery($page, $pageSize, $params)
+    {
+        $table = "qihoo_role as r";
+        $where = self::getQueryConditions($params);
+        $offset = ($page - 1) * $pageSize;
+        $limit = "limit {$pageSize} offset {$offset}";
+
+        $totalSql = "select count(*) as total from $table $where";
+        $result = \DB::select($totalSql, $params);
+        $total = empty($result) ? 0 : $result[0]->total;
+
+        $sql = "select * from $table $where $limit";
+        $result = \DB::select($sql, $params);
+
+        return array($total, $result);
+    }
+
+    public static function getQueryConditions(&$params)
+    {
+        $conditions = array();
+        if (!empty($params['name'])) {
+            $conditions[] = "r.name=:name";
+        }
+
+        $where = implode(" and ", $conditions);
+        if (empty($where)) {
+            return "";
+        } else {
+            return "where {$where}";
+        }
+    }
+
+    public static function getRoleMap()
+    {
+        $entities = \DB::all(self::TABLE);
+        $roleMap = array();
+        foreach ($entities as $entity) {
+            $roleMap[$entity->id] = $entity->name;
+        }
+        return $roleMap;
+    }
+}

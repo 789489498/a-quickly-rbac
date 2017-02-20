@@ -1,0 +1,51 @@
+<?php
+
+namespace Qihoo;
+
+class RoleRoute
+{
+    const TABLE = "qihoo_role_route";
+
+    /**
+     * 为角色编辑路由
+     */
+    public static function flushRoutes($roleId, array $routes)
+    {
+        $entities = \DB::find(self::TABLE, array('role_id' => $roleId));
+        foreach ($entities as $v) {
+            if (!in_array($v->has_route, $routes)) {
+                \DB::delete(self::TABLE, array('id' => $v->id));
+            }
+        }
+
+        foreach ($routes as $v) {
+            $entity = \DB::findOne(self::TABLE, array('role_id' => $roleId, 'has_route' => $v));
+            if (empty($entity)) {
+                $newRoleRoute = array(
+                    'role_id'     => $roleId,
+                    'has_route'   => $v,
+                    'create_time' => date('Y-m-d H:i:s'),
+                    'operator'    => User::getUsername(),
+                );
+                \DB::insert(self::TABLE, $newRoleRoute);
+            }
+        }
+    }
+
+    /**
+     * 角色是否有某路由权限
+     */
+    public static function hasRoute($roleId, $route)
+    {
+        $roleRoutes = \DB::find(self::TABLE, array('role_id' => $roleId));
+        $routes = array();
+        foreach ($roleRoutes as $v) {
+            $routes[] = $v->has_route;
+        }
+        if (in_array($route, $routes)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
