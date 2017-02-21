@@ -9,7 +9,7 @@
     </a>
     <a href="index.html" class="navbar-brand text-lt">
       <i class="icon-earphones"></i>
-      <img src="/template/amazing/images/logo.png" alt="." class="hide">
+      <img src="/public/template/amazing/images/logo.png" alt="." class="hide">
       <span class="hidden-nav-xs m-l-sm">Musik</span></a>
     <a class="btn btn-link visible-xs" data-toggle="dropdown" data-target=".user">
       <i class="icon-settings"></i>
@@ -56,7 +56,7 @@
             <div class="list-group list-group-alt">
               <a href="#" class="media list-group-item">
                 <span class="pull-left thumb-sm">
-                  <img src="/template/amazing/images/a0.png" alt="..." class="img-circle"></span>
+                  <img src="/public/template/amazing/images/a0.png" alt="..." class="img-circle"></span>
                 <span class="media-body block m-b-none">Use awesome animate.css
                   <br>
                   <small class="text-muted">10 minutes ago</small></span>
@@ -78,7 +78,7 @@
       <li class="dropdown">
         <a href="#" class="dropdown-toggle bg clear" data-toggle="dropdown">
           <span class="thumb-sm avatar pull-right m-t-n-sm m-b-n-sm m-l-sm">
-            <img src="/template/amazing/images/a0.png" alt="..."></span>John.Smith
+            <img src="/public/template/amazing/images/a0.png" alt="..."></span>John.Smith
           <b class="caret"></b></a>
         <ul class="dropdown-menu animated fadeInRight">
           <li>

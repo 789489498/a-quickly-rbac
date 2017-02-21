@@ -141,7 +141,7 @@ getMenu($menus, $routeMap, $defaultRoutes, $currentRoute, $currentRouteMpid);
             <div class="dropdown dropup wrapper-sm clearfix">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <span class="thumb-sm avatar pull-left m-l-xs">
-                  <img src="/template/amazing/images/a3.png" class="dker" alt="...">
+                  <img src="/public/template/amazing/images/a3.png" class="dker" alt="...">
                   <i class="on b-black"></i>
                 </span>
                 <span class="hidden-nav-xs clear">
