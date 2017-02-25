@@ -21,7 +21,7 @@ class AdminController extends BaseController
 	{
 	    $inputParams = $this->getInputParams("username,password");
 	    BaseModel::Factory()->md5('password', $inputParams);
-	    $params = $this->packJson(url('admin/index'), 200, Constant::$zhLoginSuc);
+	    $params = $this->packJson(url('menu/getlist'), 200, Constant::$zhLoginSuc);
 	    if (!User::login($inputParams)) {
 	        $params = $this->packJson(url('admin/login'), 500, Constant::$zhLoginFai);
 	    }
