@@ -22,13 +22,13 @@ class BaseModel
     protected $FieldsRangeMaxCollect 	= [];
     protected $FieldsLikeCollect        = [];
     protected $FieldsNotLikeCollect     = [];
-    protected $FieldsEqualCollect 	    = [];
+    protected $FieldsEqualCollect       = [];
     protected $FieldsNotEqualCollect 	= [];
-    protected $FieldsRegexpCollect 	    = [];
+    protected $FieldsRegexpCollect      = [];
     protected $FieldsNotRegexpCollect   = [];
     protected $ParametersFromSend       = [];
     protected $PreparedBindingValues    = [];
-    protected $FillParamType = 'FillKey';
+    protected $FillParamType            = 'FillKey';
     protected $DefaultDatabase          = 'mysql';
     
     public function setFieldsRangeMinCollect($value) {$this->FieldsRangeMinCollect = $value;return $this;}
