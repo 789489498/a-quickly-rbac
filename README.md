@@ -3,7 +3,7 @@
 <h5><a href="http://www.helloenshi.com/public/menu/getlist">后台体验</a>  账号：test 密码：123456
 <br/><a href="http://www.helloenshi.com/public/product/index">应用体验</a></h5>
 <h5>附布局图一张：<br/>
-<img src="http://7xussr.com1.z0.glb.clouddn.com/776812301712747409.jpg" />
+<img src="http://res.helloenshi.com/138890166860044604.jpg" />
 </h5>
 <h3>#表设计</h3>
 <h5>用户表</h5>
