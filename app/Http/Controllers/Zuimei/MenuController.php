@@ -66,8 +66,13 @@ class MenuController extends BaseController
         return $this->postQuery($params);
     }
     
-    public function postRow()
+    public function postRow($params=array())
     {
+        if (!empty($params)) {
+            return Menu::getQuery($this->defaultPage, 
+                $this->defaultPageSize, $params);            
+        }
+        
         $tableColumns = Input::get('tableColumns', '');
         $params = $this->getInputParams($tableColumns);
         list($total, $records, $columns) = Menu::getQuery($this->defaultPage, $this->defaultPageSize, $params);
@@ -93,8 +98,18 @@ class MenuController extends BaseController
     {
         $tableColumns = Input::get('tableColumns', '');
         $params = $this->getInputParams($tableColumns);
-        Menu::postDelete($params);
-        Route::postDelete(array('mid'=>$params['id']));
+        
+        $menu = Menu::getMenu();
+        $menu = BaseModel::format2Array($menu, 'id');
+        
+        $menuCollect = Menu::getAssoMenu($menu, $params['id']);
+        $menuCollect = array_merge($menuCollect, array($params['id']));
+
+        foreach ($menuCollect as $k=> $v) {
+            Menu::postDelete(array('id'=>$v));
+            Route::postDelete(array('mid'=>$v));
+        }
+        
         $this->setEmpty($params);
         return $this->postQuery($params);
     }

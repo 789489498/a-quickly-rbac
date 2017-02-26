@@ -113,6 +113,18 @@ class Menu extends BaseModel
         return $record;
     }
     
+    public static function getAssoMenu(&$result, $id=0)
+    {
+        $record = array();
+        foreach ($result as $k=> $v) {
+            if ($v['pid'] == $id) {
+                $record = self::getAssoMenu($result, $v['id']);
+                $record = array_merge($record, array($v['id']));
+            }
+        }
+        return $record;
+    }
+    
     public static function getMenuPid(&$result, $id=0)
     {
         $pid = 0;
