@@ -47,7 +47,9 @@ use Illuminate\Support\Facades\Route as Uri;
             <nav class="nav-primary hidden-xs">
 <?php 
 
-
+////目前通过菜单的根判断会出现多个子菜单都展开的情况
+////TODO:当前访问路由焦点的获取办法
+////先获取到当前路由菜单路径(如5/3/9/1)然后在遍历菜单时候判断是否存在于map，是则展开
 
 ////GET MENU ////!START
 function getMenu(&$menus, &$routeMap, $defaultRoutes, $currentRoute, $currentRouteMpid, $id=0, $level=0) {
