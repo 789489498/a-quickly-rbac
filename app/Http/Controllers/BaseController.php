@@ -13,14 +13,18 @@ class BaseController extends BasicController
 {
     use AuthorizesRequests, AuthorizesResources, DispatchesJobs, ValidatesRequests;
     
-    public function getInputParams($fields='')
+    public function getInputParams($fields='', $is_default=false)
     {
         $params = array();
         if (!$fields) return $params;
         $fields = explode(',', str_replace(array(' ,',', ',' |','| '), ',', trim($fields)));
         foreach ($fields as $v) {
-            if (Input::get($v) != '') {
-                $params[$v] = trim(Input::get($v));
+            $value = trim(Input::get($v));
+            if ($value != '') {
+                $params[$v] = $value;
+            }
+            if ($is_default) {
+                $params[$v] = $value;
             }
         }
         return $params;

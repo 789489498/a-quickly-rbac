@@ -1,9 +1,9 @@
 <h5>角色访问控制在后台管理系统中是不可缺少的一部分，它高层次的抽象主体灵活的支撑着整个系统的安全访问。它通常使用5张表来实现，即用户表、角色表、路由表、主体指派表(用户-角色)、权限指派表(角色-路由)。在此还设计一个菜单表，它与路由存在一对多的关系。下面将会给出表的设计。
-<br/><br/>a-quickly-rbac目前已支持的特性：<br/>菜单管理：无限级菜单分配、前台菜单配置、菜单排序、通知设置。<br/>路由管理：CRUD<br/>权限管理：CRUD<br/>用户管理：CRUD<br/>用户管理：CRUD</h5>
+<br/><br/>a-quickly-rbac目前已支持的特性：<br/>菜单管理：无限级菜单分配、前台菜单切换、菜单排序、通知设置。<br/>路由管理：CRUD<br/>权限管理：CRUD<br/>用户管理：CRUD<br/>用户管理：CRUD</h5>
 <h5><a href="http://www.helloenshi.com/public/menu/getlist">后台体验</a>  账号：test 密码：123456
 <br/><a href="http://www.helloenshi.com/public/product/index">应用体验</a></h5>
 <h5>附布局图一张：<br/>
-<img src="http://7xussr.com1.z0.glb.clouddn.com/776812301712747409.jpg" />
+<img src="http://res.helloenshi.com/138890166860044604.jpg" />
 </h5>
 <h3>#表设计</h3>
 <h5>用户表</h5>
@@ -268,35 +268,7 @@
         </tr>
         <tr >
             <td >
-                mid_1
-            </td>
-            <td >
-                int(12)
-            </td>
-            <td >
-                菜单名
-            </td>
-            <td >
-                fk
-            </td>
-        </tr>
-        <tr >
-            <td >
-                mid_2
-            </td>
-            <td >
-                int(12)
-            </td>
-            <td >
-                菜单名
-            </td>
-            <td >
-                fk
-            </td>
-        </tr>
-        <tr >
-            <td >
-                mid_3
+                mid
             </td>
             <td >
                 int(12)

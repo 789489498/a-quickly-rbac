@@ -19,7 +19,8 @@ class AdminController extends BaseController
 	
 	public function doLogin()
 	{
-	    $inputParams = $this->getInputParams("username,password");
+	    ////not forget param true**
+	    $inputParams = $this->getInputParams("username,password", true);
 	    BaseModel::Factory()->md5('password', $inputParams);
 	    $params = $this->packJson(url('menu/getlist'), 200, Constant::$zhLoginSuc);
 	    if (!User::login($inputParams)) {
@@ -30,7 +31,7 @@ class AdminController extends BaseController
 	
 	public function doRegister()
 	{
-	    $inputParams = $this->getInputParams("username,password");
+	    $inputParams = $this->getInputParams("username,password", true);
 	    BaseModel::Factory()->md5('password', $inputParams);
 	    $params = $this->packJson(url('admin/login'), 200, Constant::$zhRegisterSuc);
 	    if (!User::doRegister($inputParams)) {
