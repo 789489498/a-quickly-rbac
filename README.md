@@ -268,35 +268,7 @@
         </tr>
         <tr >
             <td >
-                mid_1
-            </td>
-            <td >
-                int(12)
-            </td>
-            <td >
-                菜单名
-            </td>
-            <td >
-                fk
-            </td>
-        </tr>
-        <tr >
-            <td >
-                mid_2
-            </td>
-            <td >
-                int(12)
-            </td>
-            <td >
-                菜单名
-            </td>
-            <td >
-                fk
-            </td>
-        </tr>
-        <tr >
-            <td >
-                mid_3
+                mid
             </td>
             <td >
                 int(12)
