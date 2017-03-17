@@ -20,7 +20,7 @@ class BaseController extends BasicController
         $fields = explode(',', str_replace(array(' ,',', ',' |','| '), ',', trim($fields)));
         foreach ($fields as $v) {
             if (Input::get($v) != '') {
-                $params[$v] = Input::get($v);
+                $params[$v] = trim(Input::get($v));
             }
         }
         return $params;
@@ -42,6 +42,16 @@ class BaseController extends BasicController
         foreach ($keys as $k) {
             if (isset($params[$k])) {
                 unset($params[$k]);
+            }
+        }
+    }
+    
+    public function base64Encode(&$params, $keys='')
+    {
+        $keys = explode(',', str_replace(array(' ,',', ',' |','| '), ',', trim($keys)));
+        foreach ($keys as $k) {
+            if (isset($params[$k])) {
+                $params[$k] = base64_encode($params[$k]);
             }
         }
     }

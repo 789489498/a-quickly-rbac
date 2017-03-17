@@ -11,7 +11,10 @@
 <script type="text/javascript" src="/public/template/amazing/js/jPlayer/add-on/jplayer.playlist.min.js"></script>
 <script type="text/javascript" src="/public/template/amazing/js/bs_pagination/jquery.bs_pagination.min.js"></script>
 <script type="text/javascript" src="/public/template/amazing/js/bs_pagination/localization/en.min.js"></script>
-<script type="text/javascript" src="/public/template/amazing/js/jPlayer/demo.js"></script>
+<!-- wysiwyg -->
+<script src="/public/template/amazing/js/wysiwyg/jquery.hotkeys.js"></script>
+<script src="/public/template/amazing/js/wysiwyg/bootstrap-wysiwyg.js"></script>
+<script src="/public/template/amazing/js/wysiwyg/demo.js"></script>
 @include('zuimei.event.pagination')
 @include('zuimei.event.bindevents')
 </body>

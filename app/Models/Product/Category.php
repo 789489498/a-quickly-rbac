@@ -1,21 +1,16 @@
 <?php
 
-namespace App\Models\Zuimei;
+namespace App\Models\Product;
 use App\Models\BaseModel;
 
-class Menu extends BaseModel
+class Category extends BaseModel
 {
-    const TABLE = "zm_menu";
+    const TABLE = "zm_category";
     public static $fieldsMap = array(
-        'id'         => array('name'=>'ID',  'desc'=>''),
-        'pid'        => array('name'=>'父级菜单', 'desc'=>''),
-        'is_show'    => array('name'=>'是否显示', 'desc'=>''),
-        'is_node'    => array('name'=>'是否节点', 'desc'=>''),
-        'name'       => array('name'=>'菜单名称', 'desc'=>''),
-        'icon'       => array('name'=>'图标样式', 'desc'=>''),
-        'badge'      => array('name'=>'通知样式', 'desc'=>''),
-        'msgnum'     => array('name'=>'消息条数', 'desc'=>''),
-        'sortnum'    => array('name'=>'排列顺序', 'desc'=>''),
+        'id'            => array('name'=>'ID',  'desc'=>''),
+        'category_pid'  => array('name'=>'父级类目', 'desc'=>''),
+        'category_name' => array('name'=>'类目名称', 'desc'=>''),
+        'type'          => array('name'=>'类目类型', 'desc'=>''),
         'operator'   => array('name'=>'操作人', 'desc'=>''),
         'create_time'=> array('name'=>'创建时间', 'desc'=>''),
         'update_time'=> array('name'=>'更新时间', 'desc'=>''),
@@ -29,11 +24,11 @@ class Menu extends BaseModel
                 'uri'   =>'',
                 'icon'  =>'fa fa-home',
             ),
-            '菜单'=>array(
+            '产品'=>array(
                 'uri'   =>'',
                 'icon'  =>'fa fa-list-ul',
             ),
-            '列表'=>array(
+            '类目'=>array(
                 'uri'   =>'#',
                 'icon'  =>'',
             )
@@ -42,7 +37,7 @@ class Menu extends BaseModel
     
     public static function getFiledDistinct($fileds='')
     {
-        $table = Menu::TABLE;
+        $table = Category::TABLE;
         $query = "select {$fileds} from {$table} group by {$fileds}";
         \DB::reconnect()->setFetchMode(\PDO::FETCH_OBJ);
         return \DB::reconnect()->select($query);
@@ -73,19 +68,19 @@ class Menu extends BaseModel
     
     public static function postAdd($params)
     {
-        return \DB::table(Menu::TABLE)->insertGetId($params);
+        return \DB::table(Category::TABLE)->insertGetId($params);
     }
     
     public static function postUpdate($where, $params)
     {
         list($k, $v) = $where;
-        return \DB::table(Menu::TABLE)->where($k, $v)
+        return \DB::table(Category::TABLE)->where($k, $v)
         ->update($params);
     }
     
     public static function postDelete($params)
     {
-        $table = Menu::TABLE;
+        $table = Category::TABLE;
         list($where, $bindValues) = BaseModel::Factory()->getConditions($params);
         $query = "delete from {$table} where $where";
         \DB::connection()->delete($query, $bindValues);
@@ -94,7 +89,7 @@ class Menu extends BaseModel
     
     public static function getMenu($fetch_mode=\PDO::FETCH_OBJ, $params=array())
     {
-        $table = Menu::TABLE;
+        $table = Category::TABLE;
         list($where, $bindValues) = BaseModel::Factory()->getConditions($params);
         $where = empty($where) ? "" : "where {$where}";
         $query = "select * from {$table} {$where}";
@@ -114,24 +109,12 @@ class Menu extends BaseModel
         return $record;
     }
     
-    public static function getAssoMenuWithPid(&$result, $id=0)
+    public static function getAssoMenu(&$result, $id=0)
     {
         $record = array();
         foreach ($result as $k=> $v) {
             if ($v['pid'] == $id) {
-                $record = self::getAssoMenuWithPid($result, $v['id']);
-                $record = array_merge($record, array($v['id']));
-            }
-        }
-        return $record;
-    }
-    
-    public static function getAssoMenuWithId(&$result, $id=0)
-    {
-        $record = array();
-        foreach ($result as $k=> $v) {
-            if ($v['id'] == $id) {
-                $record = self::getAssoMenuWithId($result, $v['pid']);
+                $record = self::getAssoMenu($result, $v['id']);
                 $record = array_merge($record, array($v['id']));
             }
         }

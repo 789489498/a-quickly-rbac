@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route as Uri;
     <aside class="bg-black dk nav-xs aside hidden-print" id="nav">
     <?php endif;?>
     <?php 
+
     ////获取路由、默认路由Map
     $routes = Route::getRoute();
     $routesMap = BaseModel::format2Array($routes, 'mid', 'route:name');
@@ -31,14 +32,15 @@ use Illuminate\Support\Facades\Route as Uri;
     //当前路由顶级菜单
     $currentRoute = Uri::getFacadeRoot()->current()->getActionName();
     $currentRouteMid = 0;
+    
     foreach ($routesMap as $k=> $v) {
         if (array_key_exists($currentRoute, $v)) {
             $currentRouteMid = $k;
             break;
         }
     }
-    $currentRouteMpid = Menu::getMenuPid($menusOri, $currentRouteMid);
-// echo $currentRoute;die;
+    $currentRouteMpath = Menu::getAssoMenuWithId($menusOri, $currentRouteMid);
+
     ?>
       <section class="vbox">
         <section class="w-f-md scrollable">
@@ -50,7 +52,7 @@ use Illuminate\Support\Facades\Route as Uri;
 
 
 ////GET MENU ////!START
-function getMenu(&$menus, &$routeMap, $defaultRoutes, $currentRoute, $currentRouteMpid, $id=0, $level=0) {
+function getMenu(&$menus, &$routeMap, $defaultRoutes, $currentRoute, $currentRouteMpath, $id=0, $level=0) {
 	$level ++;
 	foreach ($menus as $k=> $v) {
 		//获取当前菜单默认路由
@@ -63,8 +65,6 @@ function getMenu(&$menus, &$routeMap, $defaultRoutes, $currentRoute, $currentRou
 			$routeNameNoNamespace = Route::getStripNamespaceName($routeName);
 			$url = Route::getActionName($routeNameNoNamespace);
 			$focus = in_array($currentRoute, array_keys($defaultRoutes[$v['id']])) === true ? "active" : "";
-			
-		    //list($controller, $action) = $res = Route::getRouteControllerActionWithNameSpace($routeName);
 		}
 		//判断当前路由焦点需要注意的是:
 		//因action方法会使用当前的命名空间构造,但录入的路由已携带命名空间需要截断
@@ -73,18 +73,16 @@ function getMenu(&$menus, &$routeMap, $defaultRoutes, $currentRoute, $currentRou
 		//因此,假设一个终端节点代表一组功能,即控制器一样,方法不同
 		//可以考虑使用同一控制器来判断当前页面属于哪个终端节点菜单
 		//DONE:更加简单的方法,直接在当前菜单对应的路由表里匹配
-		
-		//list($curController, $curAction) = Route::getRouteControllerActionWithNameSpace($currentRoute);
-		//$focus = $curController == $controller ? "active" : "";
-		$active = $id == $currentRouteMpid ? "active" : "";
-		$slidedown = $id == $currentRouteMpid ? "style='display:block;'" : "style='display:none;'";
-		$msgnum = $v['msgnum'] == 0 ? "" : $v['msgnum']; 
+
+		$active = in_array($v['id'], $currentRouteMpath) ? "active" : "";
+		$slidedown = in_array($v['id'], $currentRouteMpath) ? "style='display:block;'" : "style='display:none;'";
+		$msgnum = ($v['msgnum'] == 0) ? "" : $v['msgnum']; 
 		if ($v['pid'] == $id) {
 			if ($level-1 == 0) {
-echo <<<Eof
+echo <<<EOF
 <ul class="nav" data-ride="collapse">
 <li class="hidden-nav-xs padder m-t m-b-sm text-xs text-muted">{$v['name']}</li>
-Eof;
+EOF;
 			} else {
 				$spam = "";
 				if (!empty($v['son'])) {
@@ -93,7 +91,7 @@ Eof;
 							  <i class="fa fa-angle-down text-active"></i>
 							 </span>';
 				}
-echo <<<Eof
+echo <<<EOF
 <li class="{$active} {$focus}">
 <a href="{$url}" class="auto">
 {$spam}
@@ -101,35 +99,33 @@ echo <<<Eof
 <b class="{$v['badge']}">{$msgnum}</b>
 <span>{$v['name']}</span>
 </a>
-Eof;
+EOF;
 				if (!empty($v['son'])) {
-echo <<<Eof
+echo <<<EOF
 <ul class="nav dker" {$slidedown}>
-Eof;
+EOF;
 				}
 			}
-			getMenu($v['son'], $routeMap, $defaultRoutes, $currentRoute, $currentRouteMpid, $v['id'], $level);
+			getMenu($v['son'], $routeMap, $defaultRoutes, $currentRoute, $currentRouteMpath, $v['id'], $level);
 			if ($level-1 == 0) {
-echo <<<Eof
+echo <<<EOF
 </ul>
-Eof;
+EOF;
 			} else {
 				if (!empty($v['son'])) {
-echo <<<Eof
+echo <<<EOF
 </ul>
-Eof;
+EOF;
 				}
-echo <<<Eof
+echo <<<EOF
 </li>
-Eof;
+EOF;
 			}
 		}
 	}
 }
-getMenu($menus, $routeMap, $defaultRoutes, $currentRoute, $currentRouteMpid);
+getMenu($menus, $routeMap, $defaultRoutes, $currentRoute, $currentRouteMpath);
 ////GET MENU ////!END
-
-
 
 ?>
 

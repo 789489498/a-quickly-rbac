@@ -86,11 +86,28 @@ Route::group(['namespace' => 'Zuimei', 'middleware' => ['auth'],'prefix' => 'use
 
 
 
-////Product
-Route::group(['namespace' => 'Product', 'prefix' => 'product'], function() {
-    Route::get('index', 'ProductController@index');
+//Product Category
+Route::group(['namespace' => 'Product', 'middleware' => ['auth'],'prefix' => 'category'], function() {
+    Route::get('getlist', 'CategoryController@getList');
+    Route::post('postquery', 'CategoryController@postQuery');
+    Route::post('postadd', 'CategoryController@postAdd');
+    Route::post('postrow', 'CategoryController@postRow');
+    Route::post('postupdate', 'CategoryController@postUpdate');
+    Route::post('postdelete', 'CategoryController@postDelete');
+    Route::post('postsetting', 'CategoryController@postSetting');
 });
 
+
+//Product Category
+Route::group(['namespace' => 'Product', 'middleware' => ['auth'],'prefix' => 'article'], function() {
+    Route::get('getlist', 'ArticleController@getList');
+    Route::post('postquery', 'ArticleController@postQuery');
+    Route::post('postadd', 'ArticleController@postAdd');
+    Route::post('postrow', 'ArticleController@postRow');
+    Route::post('postupdate', 'ArticleController@postUpdate');
+    Route::post('postdelete', 'ArticleController@postDelete');
+    Route::post('postsetting', 'ArticleController@postSetting');
+});
 
 
 

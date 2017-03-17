@@ -32,6 +32,6 @@ $(function(){
 		$('<div class="alert"> <button type="button" class="close" data-dismiss="alert">&times;</button>'+ 
 		 '<strong>File upload error</strong> '+msg+' </div>').prependTo('#alerts');
 	};
-  initToolbarBootstrapBindings();  
+	initToolbarBootstrapBindings();  
 	$('#editor').wysiwyg({ fileUploadError: showErrorAlert} );
 });

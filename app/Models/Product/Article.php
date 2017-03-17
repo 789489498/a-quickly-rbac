@@ -1,24 +1,27 @@
 <?php
 
-namespace App\Models\Zuimei;
+namespace App\Models\Product;
 use App\Models\BaseModel;
 
-class Menu extends BaseModel
+class Article extends BaseModel
 {
-    const TABLE = "zm_menu";
+    const TABLE = "zm_article";
     public static $fieldsMap = array(
-        'id'         => array('name'=>'ID',  'desc'=>''),
-        'pid'        => array('name'=>'父级菜单', 'desc'=>''),
-        'is_show'    => array('name'=>'是否显示', 'desc'=>''),
-        'is_node'    => array('name'=>'是否节点', 'desc'=>''),
-        'name'       => array('name'=>'菜单名称', 'desc'=>''),
-        'icon'       => array('name'=>'图标样式', 'desc'=>''),
-        'badge'      => array('name'=>'通知样式', 'desc'=>''),
-        'msgnum'     => array('name'=>'消息条数', 'desc'=>''),
-        'sortnum'    => array('name'=>'排列顺序', 'desc'=>''),
-        'operator'   => array('name'=>'操作人', 'desc'=>''),
-        'create_time'=> array('name'=>'创建时间', 'desc'=>''),
-        'update_time'=> array('name'=>'更新时间', 'desc'=>''),
+        'id'            => array('name'=>'ID', 'desc'=>''),
+        'item_id'       => array('name'=>'商品fk', 'desc'=>''),
+        'title'         => array('name'=>'文章标题', 'desc'=>''),
+        'image'         => array('name'=>'首页大图', 'desc'=>''),
+        'video_uri'     => array('name'=>'视频地址', 'desc'=>''),
+        'category_id'   => array('name'=>'文章分类fk', 'desc'=>''),
+        'tag'           => array('name'=>'标签', 'desc'=>''),
+        'content'       => array('name'=>'详情信息', 'desc'=>''),
+        'pageview'      => array('name'=>'浏览次数', 'desc'=>''),
+        'favorite'      => array('name'=>'喜欢次数', 'desc'=>''),
+        'comment'       => array('name'=>'评论次数', 'desc'=>''),
+        'is_display'    => array('name'=>'是否显示', 'desc'=>''),
+        'operator'      => array('name'=>'操作人', 'desc'=>''),
+        'create_time'   => array('name'=>'创建时间', 'desc'=>''),
+        'update_time'   => array('name'=>'更新时间', 'desc'=>''),
         
     );
     
@@ -29,7 +32,7 @@ class Menu extends BaseModel
                 'uri'   =>'',
                 'icon'  =>'fa fa-home',
             ),
-            '菜单'=>array(
+            '文章'=>array(
                 'uri'   =>'',
                 'icon'  =>'fa fa-list-ul',
             ),
@@ -42,7 +45,7 @@ class Menu extends BaseModel
     
     public static function getFiledDistinct($fileds='')
     {
-        $table = Menu::TABLE;
+        $table = Category::TABLE;
         $query = "select {$fileds} from {$table} group by {$fileds}";
         \DB::reconnect()->setFetchMode(\PDO::FETCH_OBJ);
         return \DB::reconnect()->select($query);
@@ -73,19 +76,19 @@ class Menu extends BaseModel
     
     public static function postAdd($params)
     {
-        return \DB::table(Menu::TABLE)->insertGetId($params);
+        return \DB::table(Article::TABLE)->insertGetId($params);
     }
     
     public static function postUpdate($where, $params)
     {
         list($k, $v) = $where;
-        return \DB::table(Menu::TABLE)->where($k, $v)
+        return \DB::table(Article::TABLE)->where($k, $v)
         ->update($params);
     }
     
     public static function postDelete($params)
     {
-        $table = Menu::TABLE;
+        $table = Article::TABLE;
         list($where, $bindValues) = BaseModel::Factory()->getConditions($params);
         $query = "delete from {$table} where $where";
         \DB::connection()->delete($query, $bindValues);
@@ -94,7 +97,7 @@ class Menu extends BaseModel
     
     public static function getMenu($fetch_mode=\PDO::FETCH_OBJ, $params=array())
     {
-        $table = Menu::TABLE;
+        $table = Category::TABLE;
         list($where, $bindValues) = BaseModel::Factory()->getConditions($params);
         $where = empty($where) ? "" : "where {$where}";
         $query = "select * from {$table} {$where}";
@@ -114,24 +117,12 @@ class Menu extends BaseModel
         return $record;
     }
     
-    public static function getAssoMenuWithPid(&$result, $id=0)
+    public static function getAssoMenu(&$result, $id=0)
     {
         $record = array();
         foreach ($result as $k=> $v) {
             if ($v['pid'] == $id) {
-                $record = self::getAssoMenuWithPid($result, $v['id']);
-                $record = array_merge($record, array($v['id']));
-            }
-        }
-        return $record;
-    }
-    
-    public static function getAssoMenuWithId(&$result, $id=0)
-    {
-        $record = array();
-        foreach ($result as $k=> $v) {
-            if ($v['id'] == $id) {
-                $record = self::getAssoMenuWithId($result, $v['pid']);
+                $record = self::getAssoMenu($result, $v['id']);
                 $record = array_merge($record, array($v['id']));
             }
         }
