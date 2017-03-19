@@ -23,4 +23,5 @@ var ajaxErrorHandle = function(e){
 	console.log(e);
 }
 
+$('[data-bjax]').bjax();
 </script>

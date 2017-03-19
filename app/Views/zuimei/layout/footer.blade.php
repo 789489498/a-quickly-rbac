@@ -4,6 +4,7 @@
 <!-- Bootstrap -->
 <script src="/public/template/amazing/js/bootstrap.js"></script>
 <!-- App -->
+<script src="/public/template/amazing/js/bjax/bjax.min.js"></script>
 <script src="/public/template/amazing/js/app.js"></script>
 <script src="/public/template/amazing/js/slimscroll/jquery.slimscroll.min.js"></script>
 <script src="/public/template/amazing/js/app.plugin.js"></script>

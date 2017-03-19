@@ -60,9 +60,11 @@ function getMenu(&$menus, &$routeMap, $defaultRoutes, $currentRoute, $currentRou
 		//获取当前菜单默认路由
 		$url="#";
 		$focus = "";
-		$routeName = "";
+		$databjax = "";
+		$routeName  = "";
 		$controller = $action = "";
 		if (isset($defaultRoutes[$v['id']])) {
+		    $databjax = "data-bjax";
 			$routeName = array_search(1, $defaultRoutes[$v['id']]);
 			$routeNameNoNamespace = Route::getStripNamespaceName($routeName);
 			$url = Route::getActionName($routeNameNoNamespace);
@@ -95,7 +97,7 @@ EOF;
 				}
 echo <<<EOF
 <li class="{$active} {$focus}">
-<a href="{$url}" class="auto">
+<a href="{$url}" class="auto" {$databjax}>
 {$spam}
 <i class="{$v['icon']}"></i>
 <b class="{$v['badge']}">{$msgnum}</b>

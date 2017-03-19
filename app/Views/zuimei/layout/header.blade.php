@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="/public/template/amazing/js/bs_pagination/jquery.bs_pagination.min.css" type="text/css" />
     <link rel="stylesheet" href="/public/template/amazing/js/toastr/build/toastr.min.css" type="text/css" />
     <link rel="stylesheet" href="/public/template/amazing/css/csshake/dist/csshake.min.css" type="text/css" />
+    <link rel="stylesheet" href="/public/template/amazing/js/bjax/bjax.min.css" type="text/css"/>
     <script src="/public/template/amazing/js/jquery.min.js"></script>
     <script src="/public/template/amazing/js/js-cookie/src/js.cookie.js"></script>
     <script src="/public/template/amazing/js/toastr/build/toastr.min.js"></script>
