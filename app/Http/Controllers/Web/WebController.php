@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Product;
+namespace App\Http\Controllers\Web;
 use App\Http\Controllers\BaseController;
-use App\Models\Product\Category;
 use Illuminate\Support\Facades\Input;
 use App\Models\Admin\User;
 use App\Models\Product\Article;
 
-class ArticleController extends BaseController
+class WebController extends BaseController
 {
     public $defaultPage = 1;
     public $defaultPageSize = 20;
@@ -20,7 +19,7 @@ class ArticleController extends BaseController
         list($total, $records, $columns) = Article::getQuery($page, $pageSize, $params);
         
         $totalPages = ceil($total / $pageSize);
-        return \View::make("product.article.list", array(
+        return \View::make("web.index.list", array(
             'breadcrumb' => Article::getBreadcrumb(),
             'columns' => $columns,
             'records' => $records,

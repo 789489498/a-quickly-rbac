@@ -8,11 +8,11 @@ class Article extends BaseModel
     const TABLE = "zm_article";
     public static $fieldsMap = array(
         'id'            => array('name'=>'ID', 'desc'=>''),
-        'item_id'       => array('name'=>'商品fk', 'desc'=>''),
+        'item_id'       => array('name'=>'商品', 'desc'=>''),
         'title'         => array('name'=>'文章标题', 'desc'=>''),
         'image'         => array('name'=>'首页大图', 'desc'=>''),
         'video_uri'     => array('name'=>'视频地址', 'desc'=>''),
-        'category_id'   => array('name'=>'文章分类fk', 'desc'=>''),
+        'category_id'   => array('name'=>'文章分类', 'desc'=>''),
         'tag'           => array('name'=>'标签', 'desc'=>''),
         'content'       => array('name'=>'详情信息', 'desc'=>''),
         'pageview'      => array('name'=>'浏览次数', 'desc'=>''),

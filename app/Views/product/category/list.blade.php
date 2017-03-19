@@ -1,6 +1,6 @@
-@include('product.layout.header')
-@include('product.layout.toolbar')
-@include('product.layout.leftbar')
+@include('zuimei.layout.header')
+@include('zuimei.layout.toolbar')
+@include('zuimei.layout.leftbar')
 <section id="content">
   <section class="vbox">
     <section class="scrollable wrapper">
@@ -47,7 +47,7 @@
     </section>
   </section>
   <a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen,open" data-target="#nav,html"></a>
-  @include('product.layout.modal')
+  @include('zuimei.layout.modal')
 </section>
 <script>
 ////Query
@@ -170,5 +170,5 @@ var hanlder = function(that) {
 }
 bindEvent(".removeRecord", "click", hanlder);
 </script>
-@include('product.layout.footer')
+@include('zuimei.layout.footer')
         

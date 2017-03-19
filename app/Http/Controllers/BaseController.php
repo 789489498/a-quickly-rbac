@@ -60,6 +60,16 @@ class BaseController extends BasicController
         }
     }
     
+    public function addslashes(&$params, $keys='')
+    {
+        $keys = explode(',', str_replace(array(' ,',', ',' |','| '), ',', trim($keys)));
+        foreach ($keys as $k) {
+            if (isset($params[$k])) {
+                $params[$k] = addslashes($params[$k]);
+            }
+        }
+    }
+    
     public function setEmpty(&$params, $keys='')
     {
         if ($keys == '') {

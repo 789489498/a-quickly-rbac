@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Route as Uri;
         $sortnum[$k] = $v['sortnum'];
     }
     array_multisort($sortnum, SORT_ASC, $menusOri);
-    $menus = Menu::getTree($menusOri);
+    $menus = Menu::getTreeUseIsShow($menusOri);
     
     //当前路由顶级菜单
     $currentRoute = Uri::getFacadeRoot()->current()->getActionName();

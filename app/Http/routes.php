@@ -97,7 +97,6 @@ Route::group(['namespace' => 'Product', 'middleware' => ['auth'],'prefix' => 'ca
     Route::post('postsetting', 'CategoryController@postSetting');
 });
 
-
 //Product Category
 Route::group(['namespace' => 'Product', 'middleware' => ['auth'],'prefix' => 'article'], function() {
     Route::get('getlist', 'ArticleController@getList');
@@ -109,6 +108,16 @@ Route::group(['namespace' => 'Product', 'middleware' => ['auth'],'prefix' => 'ar
     Route::post('postsetting', 'ArticleController@postSetting');
 });
 
+//Web
+Route::group(['namespace' => 'Web', 'prefix' => 'web'], function() {
+    Route::get('index', 'WebController@getList');
+    Route::post('postquery', 'WebController@postQuery');
+    Route::post('postadd', 'WebController@postAdd');
+    Route::post('postrow', 'WebController@postRow');
+    Route::post('postupdate', 'WebController@postUpdate');
+    Route::post('postdelete', 'WebController@postDelete');
+    Route::post('postsetting', 'WebController@postSetting');
+});
 
 
 

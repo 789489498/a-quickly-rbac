@@ -1,8 +1,5 @@
 <?php
-use App\Models\Product\Article;
-
-$categoryCollect = Article::getFiledDistinct("id,category_name");
-$categoryMap = Article::format2Array($categoryCollect,'id','category_name');
+use App\Models\Zuimei\Menu;
 ?>
           <table class="table table-bordered b-t b-light">
             <thead>
@@ -14,8 +11,7 @@ $categoryMap = Article::format2Array($categoryCollect,'id','category_name');
                   </label>
                 </th>
                 <?php foreach ($columns as $k=> $v): ?>
-                <?php if(in_array($v, array("content"))) continue; ?>
-                <th><?php if(isset(Article::$fieldsMap[$v])) echo Article::$fieldsMap[$v]['name']; else echo $v; ?></th>
+                <th><?php if(isset(Menu::$fieldsMap[$v])) echo Menu::$fieldsMap[$v]['name']; else echo $v; ?></th>
                 <?php endforeach; ?>
                 <th style="text-align:center;">操作</th>
               </tr>
@@ -31,15 +27,7 @@ $categoryMap = Article::format2Array($categoryCollect,'id','category_name');
                 </td>
                 
                 <?php foreach ($v as $k1=> $v1): ?>
-                <?php if(in_array($k1, array("content"))) : ?>
-                <?php continue; ?>
-                <?php elseif($k1 == "category_id"): ?>
-                <td><?php if(isset($categoryMap[$v1])) echo $categoryMap[$v1]; ?></td>
-                <?php elseif($k1 == "is_display"): ?>
-                <td><?php if($v1 == 1) echo '是'; else '否'; ?></td>
-                <?php else : ?>
                 <td><?= $v1 ?></td>
-                <?php endif; ?>
                 <?php endforeach; ?>
                 <td style="text-align:center;">
                   <a class="btn btn-rounded btn-sm btn-icon btn-default editRecord"><i class="fa fa-edit"></i></a>
@@ -54,6 +42,6 @@ $categoryMap = Article::format2Array($categoryCollect,'id','category_name');
              	<input type="hidden" id="rowsPerPage" value="<?= $pageSize ?>">
              	<input type="hidden" id="totalPages"  value="<?= $totalPages ?>">
              	<input type="hidden" id="totalRows"   value="<?= $total ?>">
-             	<input type="hidden" id="requestUrl"  value="<?= url("article/postquery") ?>">
+             	<input type="hidden" id="requestUrl" value="<?= url("menu/postquery") ?>">
              	<input type="hidden" id="tableColumns" value="<?=implode(',', $columns) ?>">
            </div>

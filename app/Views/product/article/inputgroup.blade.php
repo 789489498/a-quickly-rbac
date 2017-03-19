@@ -1,16 +1,29 @@
 <?php
 use App\Models\Product\Article;
+
+//Menu Map
+$cnt=0;
+$categoryCollect = Article::getFiledDistinct("id,category_name");
+$categoryMap = Article::format2Array($categoryCollect,'id','category_name');
 ?>
+
         <div class="panel-body">
         <form action="<?= url('article/postquery') ?>" method="post" id="query_form">
         	<input type="hidden" name="tableColumns"   value="<?= implode(',', $columns)?>">
+        	
+        	<div class="panel-group" id="accordion">
+			<div class="panel panel-default">
+			<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseexample">
+					点击我进行展开，再次点击我进行折叠。
+				</a>
+			</h4>
+			</div>
+			
+			<div id="collapseexample" class="panel-collapse collapse">
+			<div class="panel-body">
             <div class="form-group pull-in clearfix">
-            	<?php
-            	//Menu Map
-            	$cnt=0;
-            	$categoryCollect = Article::getFiledDistinct("id,category_name");
-            	$categoryMap = Article::format2Array($categoryCollect,'id','category_name');
-            	?>
                 <?php foreach ($columns as $k=> $v): ?>
                 <?php 
                 
@@ -22,14 +35,15 @@ use App\Models\Product\Article;
                     $v1=Article::$fieldsMap[$v]['name'];   //Fields Name
                     $desc=Article::$fieldsMap[$v]['desc']; //Fields Desc
                     $v3="";
-                    if (isset($fillData[0]->$v)) {      //Fill Data(from update)
+                    if (isset($fillData[0]->$v)) {         //Fill Data(from update)
                         $v3=$fillData[0]->$v;
                     }
                 }
                 ?>
                 <?php if ($cnt%4 == 0 && $cnt != 0) {?>
-                </div><div class="form-group pull-in clearfix"><?php } ?>
-                <?php if ($v == "category_pid"):        //Judge Pid.?>			
+                </div>
+                <div class="form-group pull-in clearfix"><?php } ?>
+                <?php if ($v == "category_id"):        //Judge category_pid ?>			
                 <div class="col-sm-3">
                 <label><?= $v1 ?></label>
                 <div class="">
@@ -41,24 +55,55 @@ use App\Models\Product\Article;
                   	<?php if($v3 == 0) :?>
                   	<li class="active">
                       <input type="radio" name="<?= $v ?>" value="0">
-                      <a href="#">顶级菜单:0</a>
+                      <a href="#">无</a>
                     </li>
                     <?php elseif ($v3 !== ""): ?>
                     <li class="active">
                       <input type="radio" name="<?= $v ?>" value="<?= $v3 ?>">
-                      <a href="#"><?= "{$v3}:{$categoryMap[$v3]}" ?></a>
+                      <a href="#"><?= "{$categoryMap[$v3]}" ?></a>
                     </li>
                     <?php endif; ?>
                     <?php foreach ($categoryCollect as $v2): ?>
                     <li class="">
                       <input type="radio" name="<?= $v ?>" value="<?= $v2->id ?>">
-                      <a href="#"><?= "{$v2->category_name}:{$v2->id}" ?></a>
+                      <a href="#"><?= "{$v2->category_name}" ?></a>
                     </li>
                 	<?php endforeach; ?>
                 	<li class="">
                       <input type="radio" name="<?= $v ?>" value="0">
-                      <a href="#">顶级菜单:0</a>
+                      <a href="#">无</a>
                     </li>
+                  </ul>
+                  </div>
+                </div>
+                <?php elseif ($v == "is_display"):        //Judge is_display ?>			
+                <div class="col-sm-3">
+                <label><?= $v1 ?></label>
+                <div class="">
+                  <button data-toggle="dropdown" class="col-md-12 form-control btn btn-sm btn-default dropdown-toggle">
+                    <span class="dropdown-label"><?= $desc ?></span>
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-select">
+                  	<?php if($v3 == 0) :?>
+                  	<li class="active">
+                      <input type="radio" name="<?= $v ?>" value="0">
+                      <a href="#">否</a>
+                    </li>
+                    <?php else: ?>
+                  	<li class="active">
+                      <input type="radio" name="<?= $v ?>" value="1">
+                      <a href="#">是</a>
+                    </li>
+                    <?php endif; ?>
+                	<li class="">
+                      <input type="radio" name="<?= $v ?>" value="1">
+                      <a href="#">是</a>
+                    </li>
+                    <li class="">
+                      <input type="radio" name="<?= $v ?>" value="0">
+                      <a href="#">否</a>
+                    </li>                 
                   </ul>
                   </div>
                 </div>
@@ -107,6 +152,10 @@ use App\Models\Product\Article;
                 <?php endif; ?>
                 <?php $cnt++; ?>
                 <?php endforeach; ?>
+          </div>
+          </div>
+          </div>
+          </div>
           </div>
           
           <div class="form-group pull-in clearfix">
@@ -202,13 +251,11 @@ use App\Models\Product\Article;
 
                           </div>
 
-                          
-
-                          <div class="btn-group hidden">
+                          <div class="btn-group">
 
                             <a class="btn btn-default btn-sm" title="Insert picture (or just drag & drop)" id="pictureBtn"><i class="fa fa-picture-o"></i></a>
 
-                            <input type="file" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage" />
+                            <input type="file" class="" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage" />
 
                           </div>
 
@@ -222,15 +269,15 @@ use App\Models\Product\Article;
 
                         </div>
 
-                        <div id="editor" class="form-control wysiwyg_content" placeholder="Go ahead" style="overflow:scroll;height:200px;max-height:500px">
-                        <? if(!empty($fillData[0]->content)) echo base64_decode($fillData[0]->content); ?>
+                        <div id="editor" class="form-control wysiwyg_content" placeholder="Go ahead" style="overflow:scroll;height:260px;max-height:500px">
+                        <? if(!empty($fillData[0]->content)) echo $fillData[0]->content; ?>
                         </div>
 				</div>
           	</div>
 		  </div>
         </form>
         </div>
-        <footer class="panel-footer text-left bg-light lter">
+		<footer class="panel-footer text-left bg-light lter">
             <button type="submit" class="btn btn-info btn-s-xs querySbtn">查询</button>
             <button type="submit" class="btn btn-info btn-s-xs newSbtn">新建</button>
             <button type="submit" class="btn btn-info btn-s-xs updateSbtn">更新</button>
