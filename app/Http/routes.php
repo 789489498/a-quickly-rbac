@@ -11,11 +11,14 @@
 |
 */
 
-Route::get('/', function () {
-    return "hello enshi";
-});
+////root
+Route::get('/',function () {
+        return redirect('web/index');
+    }
+);
 
-////Admin
+
+////admin
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
     Route::get('info',  ['as'=>'admin/info', function () {return view('admin.message'); }]);
     Route::get('login',['as'=>'admin/login', function () {return view('admin.login'); }]);

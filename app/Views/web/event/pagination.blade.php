@@ -30,10 +30,12 @@ var queryPage = function(params) {
     for (k in params) {
     	formParams.push($('<input>', params[k]));
     }
-    $('<form>', {  
+    var $form = $('<form>', {  
         method: 'get',  
         action: $("#requestUrl").val(),  
-    }).append(formParams).submit();
+    }).append(formParams);
+	$('body').append($form);
+    $form.submit();
 
 }
 
