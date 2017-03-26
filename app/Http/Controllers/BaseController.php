@@ -19,13 +19,10 @@ class BaseController extends BasicController
         if (!$fields) return $params;
         $fields = explode(',', str_replace(array(' ,',', ',' |','| '), ',', trim($fields)));
         foreach ($fields as $v) {
-            $value = trim(Input::get($v));
-            if ($value != '') {
-                $params[$v] = $value;
-            }
-            if ($is_default) {
-                $params[$v] = $value;
-            }
+            $value = Input::get($v);
+            if (is_string($value)) $value = trim($value);
+            if ($value != '') $params[$v] = $value;
+            if ($is_default)  $params[$v] = $value;
         }
         return $params;
     }
