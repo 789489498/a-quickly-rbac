@@ -11,7 +11,8 @@ class Article extends BaseModel
         'item_id'       => array('name'=>'商品', 'desc'=>''),
         'title'         => array('name'=>'文章标题', 'desc'=>''),
         'image'         => array('name'=>'首页大图', 'desc'=>''),
-        'video_uri'     => array('name'=>'视频地址', 'desc'=>''),
+        'video'         => array('name'=>'视频地址', 'desc'=>''),
+        'vimg'          => array('name'=>'视频图片', 'desc'=>''),
         'category_id'   => array('name'=>'文章分类', 'desc'=>''),
         'tag'           => array('name'=>'标签', 'desc'=>''),
         'content'       => array('name'=>'详情信息', 'desc'=>''),
@@ -51,16 +52,20 @@ class Article extends BaseModel
         return \DB::reconnect()->select($query);
     }
     
-    public static function getQuery($page, $pageSize, $params)
+    public static function getQuery($page, $pageSize, $params, $order='')
     {
         $table = self::TABLE;
         $tableColumns = BaseModel::Factory()->getTableColumns($table);
-        list($where, $bindValues) = BaseModel::Factory()->getConditions($params);
+        
+        if (isset($params['title'])) $params['title'] = "%{$params['title']}%";
+        list($where, $bindValues) = BaseModel::Factory()->setFieldsLikeCollect('title')->
+        getConditions($params);
 
         $offset = ($page-1) * $pageSize;
         $limit = "limit $pageSize offset $offset";
         $where = empty($where) ? "" : "where $where";
-        $query = "select * from {$table} {$where} {$limit}";
+        $order = empty($order) ? "" : "$order";
+        $query = "select * from {$table} {$where} {$order} {$limit}";
         $result = \DB::reconnect()->select($query, $bindValues);
         $query = "select count(*)cnt from {$table} {$where}";
         $totalRecords = self::getTotalRecords($query, $bindValues);
@@ -95,64 +100,23 @@ class Article extends BaseModel
         return;
     }
     
-    public static function getMenu($fetch_mode=\PDO::FETCH_OBJ, $params=array())
+    public static function getTag($fetch_mode=\PDO::FETCH_OBJ, $params=array())
     {
-        $table = Category::TABLE;
+        $table = Article::TABLE;
         list($where, $bindValues) = BaseModel::Factory()->getConditions($params);
         $where = empty($where) ? "" : "where {$where}";
-        $query = "select * from {$table} {$where}";
+        $query = "select distinct tag from {$table} {$where}";
         \DB::reconnect()->setFetchMode($fetch_mode);
         return \DB::connection()->select($query, $bindValues);
     }
     
-    public static function getTree(&$result, $id=0)
+    public static function getCategory($fetch_mode=\PDO::FETCH_OBJ, $params=array())
     {
-        $record = array();
-        foreach ($result as $k=> $v) {
-            if ($v['pid'] == $id) {
-                $v['son'] = self::getTree($result, $v['id']);
-                $record[] = $v;
-            }
-        }
-        return $record;
-    }
-    
-    public static function getAssoMenu(&$result, $id=0)
-    {
-        $record = array();
-        foreach ($result as $k=> $v) {
-            if ($v['pid'] == $id) {
-                $record = self::getAssoMenu($result, $v['id']);
-                $record = array_merge($record, array($v['id']));
-            }
-        }
-        return $record;
-    }
-    
-    public static function getMenuPid(&$result, $id=0)
-    {
-        $pid = 0;
-        foreach ($result as $k=> $v) {
-            if ($v['id'] == $id) {
-                if ($v['pid'] != 0) {
-                    $pid = self::getMenuPid($result, $v['pid']);
-                } else {
-                    $pid = $v['id'];
-                }
-            }
-        }
-        return $pid;
-    }
-    
-    public static function getTreeUseIsShow(&$result)
-    {
-        $record = self::getTree($result);
-        foreach ($record as $k=> $v) {
-            //删除顶级菜单且设置了隐藏的菜单
-            if ($v['is_show'] == 0 && $v['pid'] == 0) {
-                unset($record[$k]);
-            }
-        }
-        return $record;
+        $table = Article::TABLE;
+        list($where, $bindValues) = BaseModel::Factory()->getConditions($params);
+        $where = empty($where) ? "" : "where {$where}";
+        $query = "select category_id,count(*)cnt from {$table} {$where} group by category_id";
+        \DB::reconnect()->setFetchMode($fetch_mode);
+        return \DB::connection()->select($query, $bindValues);
     }
 }

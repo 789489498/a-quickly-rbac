@@ -102,62 +102,10 @@ class Menu extends BaseModel
         return \DB::connection()->select($query, $bindValues);
     }
     
-    public static function getTree(&$result, $id=0)
-    {
-        $record = array();
-        foreach ($result as $k=> $v) {
-            if ($v['pid'] == $id) {
-                $v['son'] = self::getTree($result, $v['id']);
-                $record[] = $v;
-            }
-        }
-        return $record;
-    }
-    
-    public static function getAssoMenuWithPid(&$result, $id=0)
-    {
-        $record = array();
-        foreach ($result as $k=> $v) {
-            if ($v['pid'] == $id) {
-                $record = self::getAssoMenuWithPid($result, $v['id']);
-                $record = array_merge($record, array($v['id']));
-            }
-        }
-        return $record;
-    }
-    
-    public static function getAssoMenuWithId(&$result, $id=0)
-    {
-        $record = array();
-        foreach ($result as $k=> $v) {
-            if ($v['id'] == $id) {
-                $record = self::getAssoMenuWithId($result, $v['pid']);
-                $record = array_merge($record, array($v['id']));
-            }
-        }
-        return $record;
-    }
-    
-    public static function getMenuPid(&$result, $id=0)
-    {
-        $pid = 0;
-        foreach ($result as $k=> $v) {
-            if ($v['id'] == $id) {
-                if ($v['pid'] != 0) {
-                    $pid = self::getMenuPid($result, $v['pid']);
-                } else {
-                    $pid = $v['id'];
-                }
-            }
-        }
-        return $pid;
-    }
-    
     public static function getTreeUseIsShow(&$result)
     {
         $record = self::getTree($result);
         foreach ($record as $k=> $v) {
-            //删除顶级菜单且设置了隐藏的菜单
             if ($v['is_show'] == 0 && $v['pid'] == 0) {
                 unset($record[$k]);
             }

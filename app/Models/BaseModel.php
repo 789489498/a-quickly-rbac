@@ -31,14 +31,14 @@ class BaseModel
     protected $FillParamType            = 'FillKey';
     protected $DefaultDatabase          = 'mysql';
     
-    public function setFieldsRangeMinCollect($value) {$this->FieldsRangeMinCollect = $value;return $this;}
-    public function setFieldsRangeMaxCollect($value) {$this->FieldsRangeMaxCollect = $value;return $this;}
-    public function setFieldsLikeCollect($value) {$this->FieldsLikeCollect = $value;return $this;}
-    public function setFieldsNotLikeCollect($value) {$this->FieldsNotLikeCollect = $value;return $this;}
-    public function setFieldsEqualCollect($value) {$this->FieldsEqualCollect = $value;return $this;}
-    public function setFieldsNotEqualCollect($value) {$this->FieldsNotEqualCollect = $value;return $this;}
-    public function setFieldsRegexpCollect($value) {$this->FieldsRegexpCollect = $value;return $this;}
-    public function setFieldsNotRegexpCollect($value) {$this->FieldsNotRegexpCollect = $value;return $this;}
+    public function setFieldsRangeMinCollect($value) {$this->FieldsRangeMinCollect[$value] = '';return $this;}
+    public function setFieldsRangeMaxCollect($value) {$this->FieldsRangeMaxCollect[$value] = '';return $this;}
+    public function setFieldsLikeCollect($value) {$this->FieldsLikeCollect[$value] = '';return $this;}
+    public function setFieldsNotLikeCollect($value) {$this->FieldsNotLikeCollect[$value] = '';return $this;}
+    public function setFieldsEqualCollect($value) {$this->FieldsEqualCollect[$value] = '';return $this;}
+    public function setFieldsNotEqualCollect($value) {$this->FieldsNotEqualCollect[$value] = '';return $this;}
+    public function setFieldsRegexpCollect($value) {$this->FieldsRegexpCollect[$value] = '';return $this;}
+    public function setFieldsNotRegexpCollect($value) {$this->FieldsNotRegexpCollect[$value] = '';return $this;}
     
     public function setConnection($connection)
     {
@@ -156,7 +156,6 @@ class BaseModel
     public function getFilledSegments($k, $v='')
     {
         $segment = "";
-        
         if (array_key_exists($k, $this->FieldsLikeCollect))         {
             $rule = $this->FieldsLikeCollect[$k];
             $segment = $this->doFill($k, $v, 'like', $rule);
@@ -290,5 +289,81 @@ class BaseModel
         $sql = "insert `{$this->_table}` set {$field} on duplicate key update {$update}";
         return $this->_connection->insert($sql, $values);
     }
+    
+    public static function getTree(&$result, $id=0)
+    {
+        $record = array();
+        foreach ($result as $k=> $v) {
+            if ($v['pid'] == $id) {
+                $v['son'] = self::getTree($result, $v['id']);
+                $record[] = $v;
+            }
+        }
+        return $record;
+    }
+    
+    public static function getTreeByPid(&$result, $id=0)
+    {
+        $record = array();
+        foreach ($result as $k=> $v) {
+            if ($v['pid'] == $id) {
+                $record = self::getTreeById($result, $v['id']);
+                $record = array_merge($record, array($v['id']));
+            }
+        }
+        return $record;
+    }
+    
+    public static function getTreeById(&$result, $id=0)
+    {
+        $record = array();
+        foreach ($result as $k=> $v) {
+            if ($v['id'] == $id) {
+                $record = self::getTreeById($result, $v['pid']);
+                $record = array_merge($record, array($v['id']));
+            }
+        }
+        return $record;
+    }
+    
+    public static function getTreePid(&$result, $id=0)
+    {
+        $pid = 0;
+        foreach ($result as $k=> $v) {
+            if ($v['id'] == $id) {
+                if ($v['pid'] != 0) {
+                    $pid = self::getTreePid($result, $v['pid']);
+                } else {
+                    $pid = $v['id'];
+                }
+            }
+        }
+        return $pid;
+    }
+    
+    public static function humanTimeDiffFormat($timestamp, $curTs=0)
+    {
+        $diff = "";
+
+        if ($curTs == 0) $curTs = time();
+        $ts = $curTs - $timestamp;
+        
+        if ($ts <= 0 ) $diff = "刚刚";
+        if ($ts > 1 && $ts < 60) $diff = "{$ts} 秒前";
+        else if (($ts >= 60 && $ts < 360) && ($ts = ceil($ts / 60)))
+            $diff = "{$ts} 分钟前";
+        else if (($ts >= 360 && $ts < 8640) && ($ts = ceil($ts / 360)))
+            $diff = "{$ts} 小时前";
+        else if (($ts >= 86400 && $ts < 604800) && ($ts = ceil($ts / 86400)))
+            $diff = "{$ts} 天前";
+        else if (($ts >= 604800 && $ts < 2592000) && ($ts = ceil($ts / 604800)))
+            $diff = "{$ts} 周前";
+        else if (($ts >= 2592000 && $ts < 31536000) && ($ts = ceil($ts / 2592000)))
+            $diff = "{$ts} 月前";
+        else if (($ts >= 31536000) && ($ts = ceil($ts / 31536000)))
+            $diff = "{$ts} 年前";
+        return $diff;
+    }
+    
     
 }

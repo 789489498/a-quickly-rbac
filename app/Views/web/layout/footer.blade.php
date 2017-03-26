@@ -16,8 +16,8 @@
 <script src="/public/template/amazing/js/wysiwyg/jquery.hotkeys.js"></script>
 <script src="/public/template/amazing/js/wysiwyg/bootstrap-wysiwyg.js"></script>
 <script src="/public/template/amazing/js/wysiwyg/demo.js"></script>
-@include('zuimei.event.pagination')
-@include('zuimei.event.bindevents')
+@include('web.event.pagination')
+@include('web.event.bindevents')
 </body>
 
 </html>

@@ -39,7 +39,7 @@ use Illuminate\Support\Facades\Route as Uri;
             break;
         }
     }
-    $currentRouteMpath = Menu::getAssoMenuWithId($menusOri, $currentRouteMid);
+    $currentRouteMpath = Menu::getTreeById($menusOri, $currentRouteMid);
 
     ?>
       <section class="vbox">

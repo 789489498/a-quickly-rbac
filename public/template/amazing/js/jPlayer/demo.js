@@ -90,7 +90,6 @@ $(document).ready(function(){
 
 
   // video
-
   $("#jplayer_1").jPlayer({
     ready: function () {
       $(this).jPlayer("setMedia", {

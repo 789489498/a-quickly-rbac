@@ -86,7 +86,7 @@ Route::group(['namespace' => 'Zuimei', 'middleware' => ['auth'],'prefix' => 'use
 
 
 
-//Product Category
+//Category
 Route::group(['namespace' => 'Product', 'middleware' => ['auth'],'prefix' => 'category'], function() {
     Route::get('getlist', 'CategoryController@getList');
     Route::post('postquery', 'CategoryController@postQuery');
@@ -97,7 +97,7 @@ Route::group(['namespace' => 'Product', 'middleware' => ['auth'],'prefix' => 'ca
     Route::post('postsetting', 'CategoryController@postSetting');
 });
 
-//Product Category
+//Article
 Route::group(['namespace' => 'Product', 'middleware' => ['auth'],'prefix' => 'article'], function() {
     Route::get('getlist', 'ArticleController@getList');
     Route::post('postquery', 'ArticleController@postQuery');
@@ -111,12 +111,9 @@ Route::group(['namespace' => 'Product', 'middleware' => ['auth'],'prefix' => 'ar
 //Web
 Route::group(['namespace' => 'Web', 'prefix' => 'web'], function() {
     Route::get('index', 'WebController@getList');
-    Route::post('postquery', 'WebController@postQuery');
-    Route::post('postadd', 'WebController@postAdd');
-    Route::post('postrow', 'WebController@postRow');
-    Route::post('postupdate', 'WebController@postUpdate');
-    Route::post('postdelete', 'WebController@postDelete');
-    Route::post('postsetting', 'WebController@postSetting');
+    Route::get('category', 'WebController@getCategory');
+    Route::get('tag', 'WebController@getTag');
+    Route::get('recent', 'WebController@getRecentArticle');
 });
 
 
