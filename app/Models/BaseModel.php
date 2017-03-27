@@ -350,9 +350,9 @@ class BaseModel
         
         if ($ts <= 0 ) $diff = "刚刚";
         if ($ts > 1 && $ts < 60) $diff = "{$ts} 秒前";
-        else if (($ts >= 60 && $ts < 360) && ($ts = ceil($ts / 60)))
+        else if (($ts >= 60 && $ts < 3600) && ($ts = ceil($ts / 60)))
             $diff = "{$ts} 分钟前";
-        else if (($ts >= 360 && $ts < 86400) && ($ts = ceil($ts / 360)))
+        else if (($ts >= 3600 && $ts < 86400) && ($ts = ceil($ts / 3600)))
             $diff = "{$ts} 小时前";
         else if (($ts >= 86400 && $ts < 604800) && ($ts = ceil($ts / 86400)))
             $diff = "{$ts} 天前";
