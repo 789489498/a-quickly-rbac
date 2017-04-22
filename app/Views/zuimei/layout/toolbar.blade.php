@@ -93,7 +93,7 @@
             <a href="docs.html">Help</a></li>
           <li class="divider"></li>
           <li>
-            <a href="modal.lockme.html" data-toggle="ajaxModal">Logout</a></li>
+            <a href="<?= url("admin/logout") ?>">Logout</a></li>
         </ul>
       </li>
     </ul>
