@@ -24,7 +24,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
     Route::get('login',['as'=>'admin/login', function () {return view('admin.login'); }]);
     Route::get('register',['as'=>'admin/register', function () {return view('admin.register'); }]);
     Route::post('dologin', 'AdminController@doLogin');
-    Route::get('logout', 'AdminController@doLogout');
+    Route::post('doregister', 'AdminController@doRegister');
+    
 });
 
 Route::group(['namespace' => 'Admin', 'middleware' => ['auth'],'prefix' => 'admin'], function() {

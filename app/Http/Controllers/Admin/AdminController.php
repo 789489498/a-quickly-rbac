@@ -40,10 +40,4 @@ class AdminController extends BaseController
 	    return \Redirect::route('admin/info', array('msg'=>base64_encode($params)));
 	}
 	
-	public function doLogout()
-	{
-        User::logout();
-        return \View::make('admin/login');
-	}
-	
 }
