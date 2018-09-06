@@ -19,4 +19,4 @@ if ($uri !== '/' && file_exists(__DIR__.'/public'.$uri)) {
 }
 
 require_once __DIR__.'/public/index.php';
-//现在呢
+//生生世世生生世世生生世世是谁
